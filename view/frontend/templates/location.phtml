@@ -1,9 +1,13 @@
 <?php
-    $citys =  $block -> getCity()->LtsItem;
+    $citys =  $block -> getCity();
+
+
+
 ?>
 <div style="display: inline-block">
     <p id="select" style="margin: 0px; margin-left: 10px;"><span id="text-ward"></span>, <span id="text-district"></span>, <span id="text-city"></span></p>
 </div>
+
 
 <style>
     #content select
@@ -23,10 +27,10 @@
 <div id="content">
     <select name="city" id="city">
         <?php foreach($citys as $city) { ?>
-            <?php if($city->ID == 4) { ?>
-                <option selected value="<?= $city->ID; ?>"><?= $city->Title; ?></option>
+            <?php if($city['ID'] == 4) { ?>
+                <option selected value="<?= $city['ID']; ?>"><?= $city['Title']; ?></option>
             <?php } else { ?>
-                <option value="<?= $city->ID; ?>"><?= $city->Title; ?></option>
+                <option value="<?= $city['ID']; ?>"><?= $city['Title']; ?></option>
             <?php } ?>
         <?php } ?>
     </select>
