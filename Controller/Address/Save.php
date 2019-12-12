@@ -5,23 +5,30 @@ namespace Magenest\Location\Controller\Address;
 
 
 use Magento\Customer\Model\AddressFactory;
+use Magento\Customer\Model\SessionFactory;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\View\Result\PageFactory;
 
-class Save extends \Magento\Framework\App\Action\Action
+class Save extends Action
 {
     protected $addressFactory;
     protected $_customerSession;
     protected $addressRepository;
+
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Magento\Customer\Model\AddressFactory $addressFactory,
-        \Magento\Customer\Model\SessionFactory $customerSession
-    ) {
+        Context $context,
+        PageFactory $resultPageFactory,
+        AddressFactory $addressFactory,
+        SessionFactory $customerSession
+    )
+    {
         $this->resultPageFactory = $resultPageFactory;
         $this->addressRepository = $addressFactory->create();
         $this->_customerSession = $customerSession->create();
         parent::__construct($context);
     }
+
     public function execute()
     {
         $city = $this->_request->getParam('city');
@@ -31,21 +38,18 @@ class Save extends \Magento\Framework\App\Action\Action
         $customerData = $this->_customerSession->getCustomer();
 
         $customerAddress = [];
-        forEach($customerData->getAddresses() as $address)
+        forEach ($customerData->getAddresses() as $address)
             $customerAddress[] = $address->toArray();
         $addressId = null;
-        if(count($customerAddress) != 0)
+        if (count($customerAddress) != 0)
             $addressId = $customerAddress[0]["entity_id"];
-        if($addressId != null)
-        {
+        if ($addressId != null) {
             $address = $this->addressRepository->load($addressId);
             $address->setData('city', $city);
             $address->setData('region', $district);
             $address->setData('street', $ward);
             $address->save();
-        }
-        else
-        {
+        } else {
             $address = $this->addressRepository;
             $address->setCustomerId($customerData->getId())
                 ->setFirstname($customerData->getData('firstname'))
