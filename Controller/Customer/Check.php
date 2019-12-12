@@ -23,14 +23,15 @@ class Check extends Action
     ) {
         $this->resultPageFactory = $resultPageFactory;
         $this->jsonResultFactory = $jsonResultFactory;
-        $this->_customerSession = $customerSession->create();
+        $this->_customerSession = $customerSession;
         parent::__construct($context);
     }
 
     public function execute()
     {
-        if ($this->_customerSession->isLoggedIn()) {
-            $customer = $this->_customerSession->getCustomer();
+        $customer = $this->_customerSession->create();
+        if ($customer->isLoggedIn()) {
+            $customer = $customer->getCustomer();
             $customerAddress = [];
             foreach ($customer->getAddresses() as $address) {
                 $customerAddress[] = $address->toArray();

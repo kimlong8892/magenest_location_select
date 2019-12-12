@@ -25,13 +25,13 @@ class Get extends Action
     {
         $this->resultPageFactory = $resultPageFactory;
         $this->jsonResultFactory = $jsonResultFactory;
-        $this->_customerSession = $customerSession->create();
+        $this->_customerSession = $customerSession;
         parent::__construct($context);
     }
 
     public function execute()
     {
-        $a = $this->_customerSession->isLoggedIn();
+        $a = $this->_customerSession->create()->isLoggedIn();
         $idCity = $this->_request->getParam('id');
         $json = file_get_contents('https://thongtindoanhnghiep.co/api/city/' . $idCity . '/district');
         $result = $this->jsonResultFactory->create();

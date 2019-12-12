@@ -24,8 +24,8 @@ class Save extends Action
     )
     {
         $this->resultPageFactory = $resultPageFactory;
-        $this->addressRepository = $addressFactory->create();
-        $this->_customerSession = $customerSession->create();
+        $this->addressRepository = $addressFactory;
+        $this->_customerSession = $customerSession;
         parent::__construct($context);
     }
 
@@ -35,7 +35,7 @@ class Save extends Action
         $district = $this->_request->getParam('district');
         $ward = $this->_request->getParam('ward');
 
-        $customerData = $this->_customerSession->getCustomer();
+        $customerData = $this->_customerSession->create()->getCustomer();
 
         $customerAddress = [];
         forEach ($customerData->getAddresses() as $address)
@@ -44,13 +44,13 @@ class Save extends Action
         if (count($customerAddress) != 0)
             $addressId = $customerAddress[0]["entity_id"];
         if ($addressId != null) {
-            $address = $this->addressRepository->load($addressId);
+            $address = $this->addressRepository->create()->load($addressId);
             $address->setData('city', $city);
             $address->setData('region', $district);
             $address->setData('street', $ward);
             $address->save();
         } else {
-            $address = $this->addressRepository;
+            $address = $this->addressRepository->create();
             $address->setCustomerId($customerData->getId())
                 ->setFirstname($customerData->getData('firstname'))
                 ->setLastname($customerData->getData('lastname'))
